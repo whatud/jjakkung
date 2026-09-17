@@ -5,232 +5,224 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>짝꿍 - 친구와 하는 내기 습관</title>
 <meta name="description" content="혼자서는 못 지키던 목표를 친구와 내기로 걸고, 타이머와 사진과 목소리로 인증하고 서로 인정해주는 습관 서비스">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/projectnoonnu/2408-3@1.0/Galmuri11.css">
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <style>
-/* ===== 디자인 토큰 ===== */
 :root{
-  --green:#00DC64;          /* primary */
-  --green-dk:#00B152;
-  --fg:#000000;             /* foreground */
-  --surface:#FFFFFF;        /* surface */
-  --muted:#666666;          /* muted */
-  --tag:#F6F6F6;            /* tag surface */
-  --line:#E8E8E8;
-  --line-2:#D4D4D4;
-  --r:4px;                  /* compact radius */
-  --me:#00DC64;
-  --you:#8E8E8E;
-  --warn:#FF3B30;
+  --sea:#123A5A;        /* 깊은 바다 */
+  --sea-2:#0C2740;
+  --deck:#FFF3DA;       /* 크림 패널 */
+  --deck-2:#FFE6B8;
+  --ink:#16202E;
+  --ink-2:#4A5A6E;
+  --lime:#3FD97F;       /* 나 */
+  --coral:#FF7A45;      /* 강조 */
+  --gold:#FFC93C;
+  --sky:#6BC7F5;        /* 짝꿍 */
+  --red:#E8453C;
+  --px:4px;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{
-  font-family:'Pretendard Variable',Pretendard,-apple-system,sans-serif;
-  background:#EFEFEF; color:var(--fg);
-  display:flex; align-items:flex-start; justify-content:center;
-  gap:26px; padding:26px 16px; flex-wrap:wrap; min-height:100vh;
-  -webkit-font-smoothing:antialiased;
+  font-family:'Galmuri11','Pretendard Variable',Pretendard,sans-serif;
+  background:#0A1D30; color:var(--ink);
+  display:flex;align-items:flex-start;justify-content:center;
+  gap:26px;padding:26px 16px;flex-wrap:wrap;min-height:100vh;
+  image-rendering:pixelated;
 }
+/* 픽셀 UI 공통 */
+.hard{box-shadow:var(--px) var(--px) 0 var(--ink)}
+.hard-lg{box-shadow:6px 6px 0 var(--ink)}
 
-/* ===== 폰 프레임 ===== */
-.phone{
-  width:390px; height:800px; background:var(--surface);
-  box-shadow:0 20px 50px rgba(0,0,0,.18), 0 0 0 9px #111, 0 0 0 11px #2E2E2E;
-  border-radius:40px; overflow:hidden; position:relative; flex-shrink:0;
-}
-.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:112px;height:24px;background:#111;border-radius:0 0 14px 14px;z-index:80}
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;background:var(--surface)}
-.statusbar{height:42px;display:flex;align-items:flex-end;justify-content:space-between;padding:0 22px 3px;font-size:12px;font-weight:700;flex-shrink:0}
+.phone{width:390px;height:800px;background:var(--sea);position:relative;flex-shrink:0;
+  border-radius:38px;overflow:hidden;
+  box-shadow:0 18px 44px rgba(0,0,0,.5), 0 0 0 9px #0A1522, 0 0 0 12px #1E3247}
+.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:110px;height:24px;
+  background:#0A1522;border-radius:0 0 12px 12px;z-index:80}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;
+  background:linear-gradient(180deg,var(--sea) 0%,var(--sea-2) 100%)}
+.statusbar{height:42px;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 20px 3px;font-size:11px;color:#BFE0F5;flex-shrink:0}
 
-/* ===== 앱바 (웹툰식: 흰 배경, 굵은 워드마크) ===== */
-.appbar{
-  flex-shrink:0;height:50px;display:flex;align-items:center;justify-content:space-between;
-  padding:0 18px;border-bottom:1px solid var(--line);
-}
-.wordmark{font-size:22px;font-weight:800;letter-spacing:-.045em}
-.wordmark i{color:var(--green);font-style:normal}
-.appbar .ico{width:22px;height:22px;stroke:var(--fg);fill:none;stroke-width:2}
+.appbar{flex-shrink:0;height:52px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;border-bottom:3px solid rgba(0,0,0,.35)}
+.wordmark{font-size:20px;color:#fff;letter-spacing:.02em;text-shadow:2px 2px 0 rgba(0,0,0,.45)}
+.wordmark i{color:var(--gold);font-style:normal}
+.coin{background:var(--gold);color:var(--ink);font-size:11px;padding:5px 9px;border:2px solid var(--ink)}
 
 .view{flex:1;overflow-y:auto;overflow-x:hidden;display:none;flex-direction:column}
 .view.on{display:flex}
+.view > *{flex-shrink:0}
 .view::-webkit-scrollbar{display:none}
-.view > *{flex-shrink:0}   /* 세로 플렉스에서 내용이 눌리지 않게 */
-.pad{padding:0 18px}
+.pad{padding:0 16px}
 
-/* ===== 타이포 ===== */
-.h1{font-size:24px;font-weight:800;letter-spacing:-.04em;line-height:1.25}
-.h2{font-size:20px;font-weight:700;letter-spacing:-.03em;line-height:1.3}
-.h3{font-size:15px;font-weight:700;letter-spacing:-.02em}
-.body{font-size:14px;font-weight:500;color:var(--muted);line-height:1.55}
-.cap{font-size:12px;font-weight:500;color:var(--muted);line-height:1.5}
-.tabtxt{font-size:15px;font-weight:500}
+/* 타이포 */
+.h1{font-size:19px;color:#fff;line-height:1.5;text-shadow:2px 2px 0 rgba(0,0,0,.4)}
+.h2{font-size:16px;color:#fff;line-height:1.5;text-shadow:2px 2px 0 rgba(0,0,0,.4)}
+.h3{font-size:13px;line-height:1.5}
+.bd{font-size:11.5px;color:#BFE0F5;line-height:1.75}
+.bd-d{font-size:11.5px;color:var(--ink-2);line-height:1.75}
+.cap{font-size:10.5px;color:#8FB6D4;line-height:1.7}
 
-/* ===== 태그 / 배지 ===== */
-.tagb{display:inline-flex;align-items:center;gap:4px;background:var(--tag);color:var(--muted);
-  font-size:12px;font-weight:600;padding:5px 10px;border-radius:var(--r)}
-.tagb.green{background:rgba(0,220,100,.12);color:var(--green-dk)}
-.tagb.dark{background:var(--fg);color:#fff}
+/* 패널 */
+.panel-p{background:var(--deck);border:3px solid var(--ink);padding:14px}
+.tagp{display:inline-block;background:var(--gold);border:2px solid var(--ink);
+  font-size:10.5px;padding:4px 8px;color:var(--ink)}
+.tagp.lime{background:var(--lime)} .tagp.coral{background:var(--coral);color:#fff}
+.tagp.dark{background:var(--ink);color:#fff}
 
-/* ===== 버튼 ===== */
-.btn{width:100%;border:none;border-radius:var(--r);padding:16px;font-size:16px;font-weight:700;
-  font-family:inherit;cursor:pointer;background:var(--fg);color:#fff;letter-spacing:-.02em;
-  transition:opacity .12s,transform .1s}
-.btn:active{transform:scale(.99);opacity:.9}
-.btn.green{background:var(--green);color:#000}
-.btn.line{background:#fff;color:var(--fg);box-shadow:inset 0 0 0 1.5px var(--fg)}
-.btn.soft{background:var(--tag);color:var(--muted)}
-.btn:disabled{background:var(--tag);color:#BBB;cursor:default}
-.twobtn{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+/* 버튼 */
+.btn{width:100%;border:3px solid var(--ink);padding:14px;font-size:14px;font-family:inherit;
+  cursor:pointer;background:var(--deck);color:var(--ink);
+  box-shadow:var(--px) var(--px) 0 var(--ink);transition:transform .06s,box-shadow .06s}
+.btn:active{transform:translate(var(--px),var(--px));box-shadow:0 0 0 var(--ink)}
+.btn.go{background:var(--lime)}
+.btn.hot{background:var(--coral);color:#fff}
+.btn.dk{background:var(--sea-2);color:#fff;border-color:#000}
+.btn:disabled{background:#9AA7B4;color:#E8EEF3;cursor:default;box-shadow:var(--px) var(--px) 0 var(--ink)}
+.twobtn{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
 
-/* ===== 대결판 (웹툰 컷 느낌: 굵은 검정 테두리) ===== */
-.cut{border:2px solid var(--fg);border-radius:var(--r);background:#fff;position:relative}
-.arena{margin:14px 18px 0;padding:16px 12px 14px}
-.arena::after{content:'';position:absolute;left:50%;top:46px;bottom:60px;width:2px;background:var(--fg);opacity:.1}
+/* 대결판 */
+.arena{margin:12px 16px 0;background:var(--sea-2);border:3px solid var(--ink);
+  box-shadow:var(--px) var(--px) 0 rgba(0,0,0,.5);padding:14px 10px 12px;position:relative;
+  background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 2px,transparent 2px 4px)}
 .vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:5;
-  background:var(--fg);color:#fff;font-size:12px;font-weight:800;padding:5px 9px;border-radius:var(--r);letter-spacing:.04em}
+  background:var(--gold);border:3px solid var(--ink);font-size:12px;padding:3px 7px;color:var(--ink)}
 .duo{display:grid;grid-template-columns:1fr 1fr;gap:4px}
 .side{display:flex;flex-direction:column;align-items:center;gap:7px;padding:0 4px}
-.who{font-size:13px;font-weight:700;letter-spacing:-.02em}
-.petwrap{height:104px;display:flex;align-items:center;justify-content:center}
-.pet{width:98px;height:98px;display:block}
-.petwrap.bob .pet{animation:bob 2.6s ease-in-out infinite}
-@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-.score{font-size:22px;font-weight:800;letter-spacing:-.04em;line-height:1}
-.score em{font-size:12px;font-weight:600;color:var(--muted);font-style:normal;letter-spacing:0}
-.bar{width:100%;height:6px;background:var(--tag);border-radius:99px;overflow:hidden}
-.bar span{display:block;height:100%;transition:width .7s cubic-bezier(.2,.8,.2,1)}
-.bar.me span{background:var(--green)} .bar.you span{background:var(--you)}
+.who{font-size:12px;color:#fff}
+.petwrap{height:96px;display:flex;align-items:flex-end;justify-content:center}
+.pet{width:92px;height:92px;display:block}
+.petwrap.bob .pet{animation:bob .9s steps(2,end) infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.score{font-size:17px;color:#fff;line-height:1}
+.score em{font-size:10px;color:#8FB6D4;font-style:normal}
+.bar{width:100%;height:12px;background:#08192A;border:2px solid var(--ink);padding:1px}
+.bar span{display:block;height:100%;transition:width .4s steps(8,end)}
+.bar.me span{background:var(--lime)} .bar.you span{background:var(--sky)}
+.lv{font-size:10px;color:#8FB6D4}
 
-/* ===== 줄 항목 ===== */
-.row{display:flex;align-items:center;gap:11px}
-.strip{margin:12px 18px 0;padding:12px 14px;background:var(--tag);border-radius:var(--r);
-  display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
-.strip.alert{background:#fff;box-shadow:inset 0 0 0 1.5px var(--warn);color:var(--warn)}
+.strip{margin:10px 16px 0;padding:9px 11px;background:rgba(255,201,60,.14);
+  border:2px solid var(--gold);display:flex;align-items:center;gap:7px;font-size:11px;color:var(--gold)}
+.strip.warn{background:rgba(232,69,60,.14);border-color:var(--red);color:#FF9D97}
 
-/* ===== 오늘 카드 ===== */
-.todo{margin:14px 18px 0;padding:16px;border:2px solid var(--fg);border-radius:var(--r)}
+.todo{margin:12px 16px 0}
 
-/* ===== 하단 탭 ===== */
-.tabbar{flex-shrink:0;height:70px;border-top:1px solid var(--line);display:grid;
-  grid-template-columns:repeat(4,1fr);padding-bottom:10px;background:#fff}
+/* 탭바 */
+.tabbar{flex-shrink:0;height:68px;background:var(--sea-2);border-top:3px solid var(--ink);
+  display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:8px}
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  border:none;background:none;cursor:pointer;font-family:inherit;color:var(--muted);font-size:11px;font-weight:600}
-.tab.on{color:var(--green)}
-.tab svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.9}
+  border:none;background:none;cursor:pointer;font-family:inherit;color:#5E86A6;font-size:10px}
+.tab.on{color:var(--gold)}
+.tab .ic{width:22px;height:22px;display:block}
 
-/* ===== 인증: 타이머 ===== */
-.timerbox{margin:0 18px;padding:20px 16px;border:2px solid var(--fg);border-radius:var(--r);text-align:center}
-.tnum{font-size:52px;font-weight:800;letter-spacing:-.05em;font-variant-numeric:tabular-nums;line-height:1.05}
-.tnum.run{color:var(--green)}
-.trow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+/* 인증 */
+.chk{display:flex;gap:9px;flex-wrap:wrap}
+.chk b{font-size:10px;color:#5E86A6;background:#08192A;border:2px solid #234A6B;padding:4px 7px;font-weight:400}
+.chk b.on{color:var(--ink);background:var(--lime);border-color:var(--ink)}
+.timerbox{margin:0 16px;background:var(--sea-2);border:3px solid var(--ink);padding:14px;text-align:center;
+  box-shadow:var(--px) var(--px) 0 rgba(0,0,0,.5)}
+.tnum{font-size:40px;color:#fff;letter-spacing:.02em;line-height:1.3;text-shadow:3px 3px 0 rgba(0,0,0,.45)}
+.tnum.run{color:var(--lime)}
+.trow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
 
-/* ===== 인증: 카메라 ===== */
-.cambox{margin:12px 18px 0;border:2px solid var(--fg);border-radius:var(--r);overflow:hidden;background:var(--tag)}
-.camview{width:100%;aspect-ratio:4/3;background:#111;display:none;position:relative}
+.cambox{margin:12px 16px 0;border:3px solid var(--ink);background:#08192A;
+  box-shadow:var(--px) var(--px) 0 rgba(0,0,0,.5)}
+.camview{width:100%;aspect-ratio:4/3;display:none;position:relative}
 .camview.on{display:block}
 .camview video{width:100%;height:100%;object-fit:cover;display:block}
 .camempty{aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
 .camempty.hide{display:none}
 .shot{width:100%;aspect-ratio:4/3;object-fit:cover;display:none}
 .shot.on{display:block}
-.shutter{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
-  width:56px;height:56px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,.45);cursor:pointer}
-.camfoot{padding:11px 14px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fff;border-top:1.5px solid var(--fg)}
-.minibtn{border:none;background:var(--fg);color:#fff;font-family:inherit;font-size:12px;font-weight:700;
-  padding:8px 12px;border-radius:var(--r);cursor:pointer}
-.minibtn.soft{background:var(--tag);color:var(--muted)}
+.shutter{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+  width:48px;height:48px;background:var(--deck);border:3px solid var(--ink);cursor:pointer;border-radius:50%}
+.camfoot{padding:9px 11px;display:flex;align-items:center;justify-content:space-between;gap:8px;
+  background:var(--sea-2);border-top:3px solid var(--ink)}
+.mini{border:2px solid var(--ink);background:var(--gold);font-family:inherit;font-size:10.5px;
+  padding:6px 9px;cursor:pointer;color:var(--ink)}
+.mini.gray{background:#4A6178;color:#DCE8F0;border-color:#0A1522}
 
-/* ===== 인증: 음성 ===== */
-.voicebox{margin:12px 18px 0;padding:16px;border:2px solid var(--fg);border-radius:var(--r);text-align:center}
-.mic{width:76px;height:76px;border-radius:50%;border:none;cursor:pointer;background:var(--fg);
-  display:flex;align-items:center;justify-content:center;margin:10px auto 0}
-.mic.rec{background:var(--warn);animation:pulse 1.1s ease-out infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,59,48,.45)}100%{box-shadow:0 0 0 22px rgba(255,59,48,0)}}
-.mic svg{width:32px;height:32px;stroke:#fff;fill:none;stroke-width:2}
-.wave{display:flex;align-items:center;justify-content:center;gap:3px;height:26px;margin-top:10px}
-.wave i{width:3px;background:var(--line-2);border-radius:99px;height:6px;display:block}
-.wave.on i{background:var(--warn);animation:w .8s ease-in-out infinite}
-.wave i:nth-child(2){animation-delay:.08s}.wave i:nth-child(3){animation-delay:.16s}
-.wave i:nth-child(4){animation-delay:.24s}.wave i:nth-child(5){animation-delay:.32s}
-.wave i:nth-child(6){animation-delay:.4s}.wave i:nth-child(7){animation-delay:.48s}
-.wave i:nth-child(8){animation-delay:.56s}.wave i:nth-child(9){animation-delay:.64s}
-@keyframes w{0%,100%{height:6px}50%{height:24px}}
+.voicebox{margin:12px 16px 0;background:var(--sea-2);border:3px solid var(--ink);padding:14px;text-align:center;
+  box-shadow:var(--px) var(--px) 0 rgba(0,0,0,.5)}
+.mic{width:66px;height:66px;background:var(--coral);border:3px solid var(--ink);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;margin:10px auto 0;
+  box-shadow:var(--px) var(--px) 0 var(--ink)}
+.mic:active{transform:translate(var(--px),var(--px));box-shadow:0 0 0}
+.mic.rec{background:var(--red);animation:blink .5s steps(2,end) infinite}
+@keyframes blink{50%{background:var(--coral)}}
+.wave{display:flex;align-items:flex-end;justify-content:center;gap:3px;height:22px;margin-top:10px}
+.wave i{width:4px;display:block;height:4px;background:#2E5A7C}
+.wave.on i{background:var(--coral);animation:w .4s steps(3,end) infinite}
+.wave i:nth-child(2){animation-delay:.05s}.wave i:nth-child(3){animation-delay:.1s}
+.wave i:nth-child(4){animation-delay:.15s}.wave i:nth-child(5){animation-delay:.2s}
+.wave i:nth-child(6){animation-delay:.25s}.wave i:nth-child(7){animation-delay:.3s}
+.wave i:nth-child(8){animation-delay:.35s}.wave i:nth-child(9){animation-delay:.4s}
+@keyframes w{0%,100%{height:4px}50%{height:20px}}
 
-/* 체크리스트 */
-.check{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--muted)}
-.check.done{color:var(--green-dk)}
-.check i{width:15px;height:15px;border:1.5px solid var(--line-2);border-radius:50%;display:flex;
-  align-items:center;justify-content:center;font-size:9px;font-style:normal;color:transparent}
-.check.done i{background:var(--green);border-color:var(--green);color:#000}
+/* 승인 */
+.player{display:flex;align-items:center;gap:10px}
+.play{width:38px;height:38px;background:var(--lime);border:3px solid var(--ink);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.bars{display:flex;align-items:flex-end;gap:2px;height:22px;flex:1}
+.bars i{flex:1;background:#8FA8BC;display:block}
 
-/* ===== 승인 ===== */
-.player{display:flex;align-items:center;gap:11px}
-.play{width:42px;height:42px;border-radius:50%;background:var(--green);border:none;display:flex;
-  align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
-.play svg{width:16px;height:16px;fill:#000}
-.bars{display:flex;align-items:center;gap:2.5px;height:26px;flex:1}
-.bars i{flex:1;background:var(--line-2);border-radius:99px;display:block;transition:background .1s}
-
-/* ===== 세레머니 ===== */
+/* 세레머니 */
 .cele{position:absolute;inset:0;z-index:70;display:none;flex-direction:column;align-items:center;
-  justify-content:center;gap:2px;text-align:center;padding:28px;background:#fff}
+  justify-content:center;gap:2px;text-align:center;padding:26px;
+  background:linear-gradient(180deg,#1B4E76 0%,#0C2740 100%)}
 .cele.on{display:flex}
-.confetti{position:absolute;width:8px;height:13px;top:-20px;animation:fall 2.6s linear infinite}
-@keyframes fall{to{transform:translateY(860px) rotate(720deg)}}
-/* 웹툰 의성어 */
-.onomat{font-size:38px;font-weight:800;letter-spacing:-.05em;color:var(--green);
-  -webkit-text-stroke:2px #000; paint-order:stroke fill; transform:rotate(-5deg); line-height:1}
-.bubble{background:#fff;border:2.5px solid var(--fg);border-radius:14px;padding:12px 18px;
-  font-size:15px;font-weight:700;position:relative;margin-top:4px}
-.bubble::after,.bubble::before{content:'';position:absolute;bottom:-12px;left:50%;width:0;height:0;
-  border-left:10px solid transparent;border-right:10px solid transparent}
-.bubble::before{border-top:12px solid #000;transform:translateX(-50%)}
-.bubble::after{border-top:12px solid #fff;transform:translateX(-50%);bottom:-8px}
+.confetti{position:absolute;width:8px;height:8px;top:-16px;animation:fall 2.4s steps(20,end) infinite}
+@keyframes fall{to{transform:translateY(860px)}}
+.onomat{font-size:30px;color:var(--gold);text-shadow:3px 3px 0 var(--ink),-1px -1px 0 var(--ink);
+  transform:rotate(-4deg);line-height:1.4}
+.bubble{background:var(--deck);border:3px solid var(--ink);padding:10px 14px;font-size:12.5px;
+  position:relative;margin-top:6px;box-shadow:var(--px) var(--px) 0 rgba(0,0,0,.5)}
 
-/* ===== 상점 ===== */
-.shopgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.item{border:1.5px solid var(--line);border-radius:var(--r);padding:14px 10px;text-align:center;position:relative;background:#fff}
-.item.win{border-color:var(--fg);border-width:2px}
-.item.lock{opacity:.45}
-.emo{font-size:30px;line-height:1.25}
-.price{font-size:12.5px;font-weight:800;margin-top:3px}
-.price.ad{color:var(--green-dk)}
-.wintag{position:absolute;top:-1px;right:-1px;background:var(--green);color:#000;font-size:9.5px;
-  font-weight:800;padding:3px 7px;border-radius:0 var(--r) 0 var(--r)}
+/* 상점 */
+.shopgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.item{background:var(--deck);border:3px solid var(--ink);padding:12px 8px;text-align:center;position:relative;
+  box-shadow:var(--px) var(--px) 0 rgba(0,0,0,.5)}
+.item.lock{background:#93A3B2}
+.emo{font-size:26px;line-height:1.4}
+.price{font-size:11px;margin-top:3px}
+.price.ad{color:#1B7F45}
+.wintag{position:absolute;top:-3px;right:-3px;background:var(--lime);border:2px solid var(--ink);
+  font-size:9px;padding:2px 5px}
 
-/* ===== 기기 ===== */
-.device{width:190px;height:216px;display:block;margin:2px auto 0}
-.chips{display:flex;justify-content:center;gap:7px;margin-top:2px}
-.chip{background:var(--tag);border-radius:var(--r);padding:7px 11px;font-size:11.5px;font-weight:700;display:flex;align-items:center;gap:6px}
-.led{width:7px;height:7px;border-radius:50%;background:var(--green)}
-.led.y{background:#FFCC00}
-.feat{border-top:1px solid var(--line);padding:13px 0;display:flex;gap:11px;align-items:flex-start}
-.featno{font-size:12px;font-weight:800;color:var(--green);width:16px;flex-shrink:0;padding-top:1px}
+/* 기기 */
+.chips{display:flex;justify-content:center;gap:7px;margin-top:6px}
+.chip{background:var(--sea-2);border:2px solid var(--ink);padding:6px 9px;font-size:10px;color:#BFE0F5;
+  display:flex;align-items:center;gap:5px}
+.led{width:8px;height:8px;background:var(--lime)}
+.led.y{background:var(--gold)}
+.feat{border-top:2px solid rgba(255,255,255,.12);padding:11px 0;display:flex;gap:10px;align-items:flex-start}
+.featno{font-size:11px;color:var(--gold);width:18px;flex-shrink:0;padding-top:2px}
 
-/* ===== 사이드 패널 ===== */
-.panel{width:330px;flex-shrink:0;padding-top:4px}
-.panel h3{font-size:20px;font-weight:800;letter-spacing:-.035em;margin-bottom:4px}
-.panel h3 i{color:var(--green);font-style:normal}
-.panel .lead{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:15px;font-weight:500}
-.pcard{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:9px}
-.pcard h4{font-size:11px;font-weight:800;letter-spacing:.05em;color:var(--muted);margin-bottom:9px}
+/* 사이드 패널 */
+.side-panel{width:330px;flex-shrink:0;padding-top:4px;font-family:'Pretendard Variable',Pretendard,sans-serif}
+.side-panel h3{font-size:19px;font-weight:800;letter-spacing:-.03em;margin-bottom:5px;color:#fff;
+  font-family:'Galmuri11',monospace;letter-spacing:0}
+.side-panel h3 i{color:var(--gold);font-style:normal}
+.side-panel .lead{font-size:13px;color:#9DBDD6;line-height:1.65;margin-bottom:14px;font-weight:500}
+.pcard{background:rgba(255,255,255,.06);border:2px solid rgba(255,255,255,.14);padding:13px;margin-bottom:9px}
+.pcard h4{font-size:11px;letter-spacing:.05em;color:#7FA8C6;margin-bottom:9px;font-weight:700}
 .steps{display:flex;flex-direction:column;gap:5px}
-.step{display:flex;align-items:center;gap:9px;background:#fff;border:1.5px solid var(--line);
-  border-radius:var(--r);padding:10px 12px;cursor:pointer;font-family:inherit;text-align:left;
-  font-size:13px;font-weight:600;color:var(--fg);transition:all .12s;width:100%}
-.step:hover{border-color:var(--fg)}
-.step.on{background:var(--green);border-color:var(--green);color:#000;font-weight:700}
-.step b{width:19px;height:19px;border-radius:var(--r);background:var(--tag);color:var(--muted);display:flex;
-  align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0}
-.step.on b{background:rgba(0,0,0,.14);color:#000}
-.note{font-size:12.5px;color:var(--muted);line-height:1.6;font-weight:500}
-.note b{color:var(--fg);font-weight:700}
-.kv{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.step{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);
+  border:2px solid rgba(255,255,255,.16);padding:9px 11px;cursor:pointer;font-family:inherit;text-align:left;
+  font-size:12.5px;font-weight:600;color:#DCEAF4;width:100%;transition:all .1s}
+.step:hover{border-color:var(--gold)}
+.step.on{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:700}
+.step b{width:18px;height:18px;background:rgba(0,0,0,.3);color:#BFE0F5;display:flex;
+  align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.step.on b{background:rgba(0,0,0,.2);color:var(--ink)}
+.note{font-size:12.5px;color:#9DBDD6;line-height:1.65;font-weight:500}
+.note b{color:#fff;font-weight:700}
+.kv{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:7px 0;
+  border-bottom:1px solid rgba(255,255,255,.1);color:#9DBDD6}
 .kv:last-child{border:none}
-.kv span:first-child{color:var(--muted);font-weight:500;white-space:nowrap}
-.kv span:last-child{font-weight:700;text-align:right}
-.ds{display:flex;align-items:center;gap:7px;font-size:11.5px;font-weight:600;color:var(--muted);margin-top:8px}
-.sw{width:15px;height:15px;border-radius:2px;border:1px solid rgba(0,0,0,.12)}
-@media(max-width:800px){.panel{width:390px}}
+.kv span:last-child{font-weight:700;color:#fff;text-align:right}
+@media(max-width:800px){.side-panel{width:390px}}
 </style>
 </head>
 <body>
@@ -242,86 +234,77 @@ body{
 
     <div class="appbar">
       <div class="wordmark">짝<i>꿍</i></div>
-      <svg class="ico" viewBox="0 0 24 24" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <span class="coin">Lv.3</span>
     </div>
 
-    <!-- ============ 1. 홈 ============ -->
+    <!-- ===== 홈 ===== -->
     <section class="view on" id="v-home">
-      <div class="pad" style="padding-top:14px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px">
+      <div class="pad" style="padding-top:12px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px">
         <div>
-          <span class="tagb green">진행 중</span>
-          <div class="h2" style="margin-top:7px">매일 책 20쪽 읽기</div>
+          <span class="tagp lime">진행 중</span>
+          <div class="h2" style="margin-top:8px">매일 책 20쪽 읽기</div>
         </div>
-        <span class="tagb dark">D-7</span>
+        <span class="tagp dark">D-7</span>
       </div>
 
-      <div class="cut arena">
+      <div class="arena">
         <div class="vs">VS</div>
         <div class="duo">
           <div class="side">
-            <div class="who">나</div>
-            <div class="petwrap bob"><svg class="pet" id="petMe" viewBox="0 0 120 120"></svg></div>
+            <div class="who">얌마</div>
+            <div class="petwrap bob"><svg class="pet" id="petMe" viewBox="0 0 16 16"></svg></div>
             <div class="score" id="scoreMe">6<em>/7일</em></div>
             <div class="bar me"><span id="barMe" style="width:86%"></span></div>
-            <div class="cap" style="font-size:11px;font-weight:700">Lv.3 통통이</div>
+            <div class="lv">Lv.3 통통이</div>
           </div>
           <div class="side">
-            <div class="who">수현</div>
-            <div class="petwrap bob" style="animation-delay:.7s"><svg class="pet" id="petYou" viewBox="0 0 120 120"></svg></div>
+            <div class="who">왬마</div>
+            <div class="petwrap bob" style="animation-delay:.45s"><svg class="pet" id="petYou" viewBox="0 0 16 16"></svg></div>
             <div class="score">4<em>/7일</em></div>
             <div class="bar you"><span style="width:57%"></span></div>
-            <div class="cap" style="font-size:11px;font-weight:700">Lv.2 말랑이</div>
+            <div class="lv">Lv.2 말랑이</div>
           </div>
         </div>
       </div>
 
-      <div class="strip"><span>🔥</span><span>6일 연속 인증 중. 수현이보다 2일 앞서고 있어요</span></div>
+      <div class="strip"><span>🔥</span><span>6일 연속 인증 중. 왬마보다 2일 앞서는 중</span></div>
 
       <div class="todo">
-        <div class="row" style="margin-bottom:13px">
-          <div style="flex:1">
-            <div class="h3">오늘 몫이 남았어요</div>
-            <div class="cap" style="margin-top:3px">타이머를 켜거나 사진을 찍어서 남기면 돼요</div>
-          </div>
+        <div class="panel-p hard">
+          <div class="h3">오늘 몫이 남았어요</div>
+          <div class="bd-d" style="margin-top:4px;margin-bottom:12px">타이머를 켜거나 사진을 찍어서 남기면 돼요</div>
+          <button class="btn go" onclick="go('verify')">오늘 인증하기</button>
         </div>
-        <button class="btn green" onclick="go('verify')">오늘 인증하기</button>
       </div>
 
-      <div class="strip alert"><span>⏰</span><span>수현이가 어제 인증 1건을 아직 확인하지 않았어요</span></div>
+      <div class="strip warn"><span>⏰</span><span>왬마가 어제 인증 1건을 아직 안 봤어요</span></div>
       <div style="height:18px"></div>
     </section>
 
-    <!-- ============ 2. 인증 ============ -->
+    <!-- ===== 인증 ===== -->
     <section class="view" id="v-verify">
       <div class="pad" style="padding-top:12px;display:flex;align-items:center;justify-content:space-between">
-        <button class="tab" style="flex-direction:row;gap:5px;color:var(--fg);padding:0" onclick="stopAll();go('home')">
-          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>
-          <span style="font-size:13px;font-weight:700">7일차 인증</span>
-        </button>
-        <span class="tagb">책 20쪽</span>
+        <button class="tab" style="flex-direction:row;gap:5px;color:#BFE0F5;padding:0;font-size:12px"
+          onclick="stopAll();go('home')">◀ 7일차 인증</button>
+        <span class="tagp">책 20쪽</span>
+      </div>
+      <div class="pad chk" style="margin:12px 0 12px">
+        <b id="ck1">타이머</b><b id="ck2">사진</b><b id="ck3">목소리</b>
       </div>
 
-      <div class="pad" style="margin:12px 0 12px;display:flex;gap:12px">
-        <span class="check" id="ck1"><i>✓</i>타이머</span>
-        <span class="check" id="ck2"><i>✓</i>사진</span>
-        <span class="check" id="ck3"><i>✓</i>목소리</span>
-      </div>
-
-      <!-- 타이머 -->
       <div class="timerbox">
-        <div class="cap" style="font-weight:700">얼마나 했는지 재기</div>
+        <div class="cap">얼마나 했는지 재기</div>
         <div class="tnum" id="tnum">00:00</div>
         <div class="trow">
-          <button class="btn line" id="tBtn" onclick="toggleTimer()">시작</button>
-          <button class="btn soft" onclick="resetTimer()">초기화</button>
+          <button class="btn go" id="tBtn" onclick="toggleTimer()">시작</button>
+          <button class="btn dk" onclick="resetTimer()">초기화</button>
         </div>
       </div>
 
-      <!-- 카메라 -->
       <div class="cambox">
         <div class="camempty" id="camEmpty">
-          <span style="font-size:26px">📷</span>
-          <div class="cap" style="font-weight:700">오늘 읽은 쪽을 찍어두세요</div>
+          <span style="font-size:24px">📷</span>
+          <div class="cap">오늘 읽은 쪽을 찍어두세요</div>
         </div>
         <div class="camview" id="camView">
           <video id="video" playsinline muted autoplay></video>
@@ -329,275 +312,322 @@ body{
         </div>
         <img class="shot" id="shot" alt="촬영한 사진">
         <div class="camfoot">
-          <span class="cap" id="camMsg" style="font-weight:600">카메라로 증거 한 장</span>
+          <span class="cap" id="camMsg">카메라로 증거 한 장</span>
           <div style="display:flex;gap:6px">
-            <button class="minibtn soft" id="againBtn" style="display:none" onclick="openCam()">다시</button>
-            <button class="minibtn" id="camBtn" onclick="openCam()">카메라 켜기</button>
+            <button class="mini gray" id="againBtn" style="display:none" onclick="openCam()">다시</button>
+            <button class="mini" id="camBtn" onclick="openCam()">카메라 켜기</button>
           </div>
         </div>
       </div>
 
-      <!-- 음성 -->
       <div class="voicebox">
-        <div class="cap" style="font-weight:700">한마디 남기기</div>
-        <div class="cap" style="margin-top:3px">목소리가 있어야 친구가 믿어줘요</div>
+        <div class="cap">한마디 남기기</div>
+        <div class="cap" style="margin-top:2px">목소리가 있어야 왬마가 믿어줘요</div>
         <button class="mic" id="micBtn" aria-label="녹음">
-          <svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v4M8 22h8"/></svg>
+          <svg width="26" height="26" viewBox="0 0 16 16" shape-rendering="crispEdges">
+            <rect x="6" y="2" width="4" height="7" fill="#fff"/>
+            <rect x="4" y="7" width="1" height="2" fill="#fff"/><rect x="11" y="7" width="1" height="2" fill="#fff"/>
+            <rect x="5" y="9" width="6" height="1" fill="#fff"/>
+            <rect x="7" y="10" width="2" height="3" fill="#fff"/>
+            <rect x="5" y="13" width="6" height="1" fill="#fff"/>
+          </svg>
         </button>
         <div class="wave" id="wave"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="cap" id="vTimer" style="font-weight:800">꾹 누르고 말하기</div>
+        <div class="cap" id="vTimer" style="margin-top:6px">꾹 누르고 말하기</div>
       </div>
 
-      <div class="pad" style="padding-top:16px;padding-bottom:22px">
-        <button class="btn green" id="sendBtn" disabled onclick="stopAll();go('wait')">수현이에게 보내기</button>
-        <div class="cap" style="text-align:center;margin-top:8px">타이머·사진·목소리 중 하나만 있어도 보낼 수 있어요</div>
+      <div class="pad" style="padding-top:14px;padding-bottom:20px">
+        <button class="btn hot" id="sendBtn" disabled onclick="stopAll();go('wait')">왬마에게 보내기</button>
+        <div class="cap" style="text-align:center;margin-top:8px">셋 중 하나만 있어도 보낼 수 있어요</div>
       </div>
     </section>
 
-    <!-- ============ 3. 보냄 ============ -->
+    <!-- ===== 보냄 ===== -->
     <section class="view" id="v-wait">
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px;text-align:center">
-        <div class="petwrap bob" style="height:140px"><svg class="pet" style="width:124px;height:124px" id="petWait" viewBox="0 0 120 120"></svg></div>
-        <div class="h1" style="margin-top:8px">보냈어요</div>
-        <div class="body" style="margin-top:6px;max-width:250px">수현이가 확인하면 짝꿍이가 자라요.<br>책상 위 기기에 노란불이 켜졌습니다</div>
-        <div class="cut" style="margin-top:20px;width:100%;padding:14px;text-align:left">
-          <div class="row">
-            <span style="font-size:20px">💡</span>
-            <div style="flex:1">
-              <div class="h3">수현이 기기가 깜빡이는 중</div>
-              <div class="cap" style="margin-top:2px">폰을 켜지 않아도 보입니다</div>
-            </div>
-          </div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center">
+        <div class="petwrap bob" style="height:130px"><svg class="pet" style="width:118px;height:118px" id="petWait" viewBox="0 0 16 16"></svg></div>
+        <div class="h1" style="margin-top:12px">보냈어요</div>
+        <div class="bd" style="margin-top:6px;max-width:250px">왬마가 확인하면 짝꿍이가 자라요.<br>책상 위 기계에 노란불이 켜졌습니다</div>
+        <div class="panel-p hard" style="margin-top:18px;width:100%;text-align:left">
+          <div class="h3">왬마 기계가 깜빡이는 중</div>
+          <div class="bd-d" style="margin-top:3px">폰을 켜지 않아도 보입니다</div>
         </div>
       </div>
-      <div class="pad" style="padding-bottom:22px">
-        <button class="btn line" onclick="go('approve')">수현이 화면으로 보기</button>
+      <div class="pad" style="padding-bottom:20px">
+        <button class="btn dk" onclick="go('approve')">왬마 화면으로 보기</button>
       </div>
     </section>
 
-    <!-- ============ 4. 승인 ============ -->
+    <!-- ===== 승인 ===== -->
     <section class="view" id="v-approve">
-      <div class="pad" style="padding-top:14px">
-        <span class="tagb">👀 지금은 수현이 화면입니다</span>
-        <div class="h1" style="margin-top:12px">지영이가 인증했어요</div>
-        <div class="body" style="margin-top:5px">보고 듣고, 인정할지 정해주세요</div>
+      <div class="pad" style="padding-top:12px">
+        <span class="tagp coral">지금은 왬마 화면</span>
+        <div class="h1" style="margin-top:12px">얌마가 인증했어요</div>
+        <div class="bd" style="margin-top:5px">보고 듣고, 인정할지 정해주세요</div>
       </div>
-
-      <div class="pad" style="margin-top:16px">
-        <div class="cut" style="padding:14px">
-          <div class="row" style="gap:10px;margin-bottom:12px">
-            <span class="tagb green">타이머 32분</span>
-            <span class="tagb green">사진 1장</span>
+      <div class="pad" style="margin-top:14px">
+        <div class="panel-p hard">
+          <div style="display:flex;gap:7px;margin-bottom:11px">
+            <span class="tagp lime">타이머 32분</span><span class="tagp lime">사진 1장</span>
           </div>
           <div class="player">
-            <button class="play" id="playBtn" aria-label="재생"><svg viewBox="0 0 24 24"><path d="M7 4l13 8-13 8z"/></svg></button>
+            <button class="play" id="playBtn" aria-label="재생">
+              <svg width="14" height="14" viewBox="0 0 16 16" shape-rendering="crispEdges">
+                <rect x="4" y="2" width="2" height="12" fill="#16202E"/><rect x="6" y="4" width="2" height="8" fill="#16202E"/>
+                <rect x="8" y="6" width="2" height="4" fill="#16202E"/><rect x="10" y="7" width="2" height="2" fill="#16202E"/>
+              </svg>
+            </button>
             <div class="bars" id="bars"></div>
-            <span class="cap" style="font-weight:700">0:06</span>
+            <span style="font-size:10.5px">0:06</span>
           </div>
-          <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
-            <div class="cap">음성 내용</div>
-            <div style="font-size:14px;font-weight:700;line-height:1.5;margin-top:3px">"오늘 24쪽 읽었다. 너 오늘도 안 읽었지?"</div>
+          <div style="margin-top:11px;padding-top:11px;border-top:2px dashed #C9B896">
+            <div class="bd-d" style="font-size:10.5px">음성 내용</div>
+            <div class="h3" style="margin-top:3px;line-height:1.6">"오늘 24쪽 읽었다. 너 오늘도 안 읽었지?"</div>
           </div>
         </div>
-
-        <div class="twobtn" style="margin-top:14px">
-          <button class="btn line" onclick="go('dispute')">이의 있음</button>
-          <button class="btn green" onclick="celebrate()">인정</button>
+        <div class="twobtn" style="margin-top:12px">
+          <button class="btn dk" onclick="go('dispute')">이의 있음</button>
+          <button class="btn go" onclick="celebrate()">인정</button>
         </div>
         <div class="cap" style="text-align:center;margin-top:9px">이의를 걸면 사진 한 장으로 확인해요</div>
       </div>
-      <div style="height:20px"></div>
+      <div style="height:18px"></div>
     </section>
 
-    <!-- ============ 5. 이의 ============ -->
+    <!-- ===== 이의 ===== -->
     <section class="view" id="v-dispute">
-      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px;text-align:center">
-        <div class="petwrap"><svg class="pet" style="width:112px;height:112px" id="petDoubt" viewBox="0 0 120 120"></svg></div>
-        <div class="h1" style="margin-top:10px">정말요?</div>
-        <div class="body" style="margin-top:6px;max-width:255px">이의를 걸면 지영이에게 사진을 다시 요청합니다.<br>24시간 안에 답이 없으면 그날은 무효예요</div>
-        <div class="cut" style="margin-top:18px;width:100%;padding:14px;text-align:left;border-color:var(--warn)">
-          <div class="h3" style="color:var(--warn)">이의는 3번까지만</div>
-          <div class="cap" style="margin-top:4px">괜히 걸면 내 신뢰도가 깎여요. 짝꿍은 서로를 믿는 게 규칙입니다</div>
+      <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center">
+        <div class="petwrap"><svg class="pet" style="width:104px;height:104px" id="petDoubt" viewBox="0 0 16 16"></svg></div>
+        <div class="h1" style="margin-top:12px">정말요?</div>
+        <div class="bd" style="margin-top:6px;max-width:250px">이의를 걸면 얌마에게 사진을 다시 요청합니다.<br>24시간 안에 답이 없으면 그날은 무효예요</div>
+        <div class="panel-p hard" style="margin-top:16px;width:100%;text-align:left;background:#FFD9D6">
+          <div class="h3" style="color:#A82A22">이의는 3번까지만</div>
+          <div class="bd-d" style="margin-top:3px">괜히 걸면 내 신뢰도가 깎여요</div>
         </div>
       </div>
-      <div class="pad" style="padding-bottom:22px">
+      <div class="pad" style="padding-bottom:20px">
         <div class="twobtn">
-          <button class="btn soft" onclick="go('approve')">취소</button>
-          <button class="btn" onclick="go('approve')">이의 보내기</button>
+          <button class="btn dk" onclick="go('approve')">취소</button>
+          <button class="btn hot" onclick="go('approve')">이의 보내기</button>
         </div>
       </div>
     </section>
 
-    <!-- ============ 6. 상점 ============ -->
+    <!-- ===== 상점 ===== -->
     <section class="view" id="v-shop">
-      <div class="pad" style="padding-top:14px">
-        <span class="tagb green">세레머니 상점</span>
-        <div class="h1" style="margin-top:9px">이긴 사람만<br>쓸 수 있어요</div>
-        <div class="body" style="margin-top:6px">내기에서 이겨야 잠금이 풀립니다.<br>진 사람은 구경만 할 수 있어요</div>
+      <div class="pad" style="padding-top:12px">
+        <span class="tagp">세레머니 상점</span>
+        <div class="h1" style="margin-top:10px">이긴 사람만<br>쓸 수 있어요</div>
+        <div class="bd" style="margin-top:6px">진 사람은 구경만 할 수 있어요</div>
       </div>
-      <div class="pad" style="margin-top:16px">
+      <div class="pad" style="margin-top:14px">
         <div class="shopgrid">
-          <div class="item win"><span class="wintag">승자</span><div class="emo">🕺</div>
-            <div class="h3" style="margin-top:4px">얄미운 웨이브</div><div class="price">1,200원</div></div>
-          <div class="item win"><span class="wintag">승자</span><div class="emo">👑</div>
-            <div class="h3" style="margin-top:4px">왕관 쓰기</div><div class="price ad">광고 보고 무료</div></div>
+          <div class="item"><span class="wintag">승자</span><div class="emo">🕺</div>
+            <div class="h3" style="margin-top:3px">얄미운 웨이브</div><div class="price">1,200원</div></div>
+          <div class="item"><span class="wintag">승자</span><div class="emo">👑</div>
+            <div class="h3" style="margin-top:3px">왕관 쓰기</div><div class="price ad">광고 보고 무료</div></div>
           <div class="item"><div class="emo">🎺</div>
-            <div class="h3" style="margin-top:4px">팡파레 소리</div><div class="price">900원</div></div>
+            <div class="h3" style="margin-top:3px">팡파레 소리</div><div class="price">900원</div></div>
           <div class="item lock"><div class="emo">🏆</div>
-            <div class="h3" style="margin-top:4px">황금 짝꿍이</div><div class="cap" style="font-weight:700;margin-top:3px">10승 달성 시</div></div>
+            <div class="h3" style="margin-top:3px">황금 짝꿍이</div><div class="price">10승 달성</div></div>
         </div>
-        <div class="cut" style="margin-top:14px;padding:14px">
+        <div class="panel-p hard" style="margin-top:12px">
           <div class="h3">왜 이긴 사람만 살까요</div>
-          <div class="cap" style="margin-top:4px">돈을 걸지 않습니다. 자랑할 권리를 파는 구조라 사행성이 없습니다</div>
+          <div class="bd-d" style="margin-top:4px">돈을 걸지 않습니다. 자랑할 권리를 파는 구조라 사행성이 없습니다</div>
         </div>
       </div>
-      <div style="height:20px"></div>
+      <div style="height:18px"></div>
     </section>
 
-    <!-- ============ 7. 기기 ============ -->
+    <!-- ===== 기기 ===== -->
     <section class="view" id="v-device">
-      <div class="pad" style="padding-top:14px">
-        <span class="tagb green">짝꿍 기기</span>
-        <div class="h1" style="margin-top:9px">폰을 켜지 않아도<br>책상 위에 있어요</div>
+      <div class="pad" style="padding-top:12px">
+        <span class="tagp">짝꿍 기계</span>
+        <div class="h1" style="margin-top:10px">폰을 켜지 않아도<br>책상 위에 있어요</div>
       </div>
-      <svg class="device" id="devSvg" viewBox="0 0 200 230"></svg>
+      <svg id="devSvg" viewBox="0 0 64 44" style="width:100%;height:170px;display:block;margin-top:8px" shape-rendering="crispEdges"></svg>
       <div class="chips">
-        <div class="chip"><i class="led"></i>내 기기 연결됨</div>
-        <div class="chip"><i class="led y"></i>수현 기기 확인중</div>
+        <div class="chip"><i class="led"></i>내 기계</div>
+        <div class="chip"><i class="led y"></i>왬마 기계</div>
       </div>
-      <div class="pad" style="margin-top:16px">
-        <div class="feat"><span class="featno">01</span><div><div class="h3">버튼 한 번이면 인증</div><div class="cap" style="margin-top:2px">누르고 말하면 상대 기기가 깜빡여요</div></div></div>
-        <div class="feat"><span class="featno">02</span><div><div class="h3">불빛으로 서로를 봐요</div><div class="cap" style="margin-top:2px">노랑은 확인 대기, 초록은 인정</div></div></div>
-        <div class="feat"><span class="featno">03</span><div><div class="h3">2대 한 세트로 팝니다</div><div class="cap" style="margin-top:2px">하나는 내가, 하나는 짝꿍에게</div></div></div>
+      <div class="pad" style="margin-top:14px">
+        <div class="feat"><span class="featno">01</span><div><div class="h3" style="color:#fff">버튼 한 번이면 인증</div><div class="cap" style="margin-top:2px">누르고 말하면 상대 기계가 깜빡여요</div></div></div>
+        <div class="feat"><span class="featno">02</span><div><div class="h3" style="color:#fff">불빛으로 서로를 봐요</div><div class="cap" style="margin-top:2px">노랑은 확인 대기, 초록은 인정</div></div></div>
+        <div class="feat"><span class="featno">03</span><div><div class="h3" style="color:#fff">2대 한 세트로 팝니다</div><div class="cap" style="margin-top:2px">하나는 내가, 하나는 짝꿍에게</div></div></div>
       </div>
-      <div style="height:20px"></div>
+      <div style="height:18px"></div>
     </section>
 
     <!-- 세레머니 -->
     <div class="cele" id="cele">
       <div class="onomat">빠-밤!</div>
-      <div class="petwrap" style="height:150px;margin-top:2px"><svg class="pet" style="width:134px;height:134px" id="petWin" viewBox="0 0 120 120"></svg></div>
+      <div class="petwrap" style="height:140px;margin-top:6px"><svg class="pet" style="width:128px;height:128px" id="petWin" viewBox="0 0 16 16"></svg></div>
       <div class="bubble">내가 이겼지롱 🕺</div>
-      <div class="tagb dark" style="margin-top:16px">7일 내기 승리</div>
-      <div class="body" style="margin-top:10px;max-width:250px">짝꿍이가 Lv.4로 자랐어요.<br>수현이 기기에서도 이 소리가 울렸습니다</div>
-      <div style="width:100%;margin-top:22px;display:flex;flex-direction:column;gap:8px">
-        <button class="btn green" onclick="closeCele('shop')">세레머니 더 보기</button>
-        <button class="btn soft" onclick="closeCele('home')">닫기</button>
+      <span class="tagp lime" style="margin-top:14px">7일 내기 승리</span>
+      <div class="bd" style="margin-top:10px;max-width:250px">짝꿍이가 Lv.4로 자랐어요.<br>왬마 기계에서도 이 소리가 울렸습니다</div>
+      <div style="width:100%;margin-top:20px;display:flex;flex-direction:column;gap:9px">
+        <button class="btn go" onclick="closeCele('shop')">세레머니 더 보기</button>
+        <button class="btn dk" onclick="closeCele('home')">닫기</button>
       </div>
     </div>
 
     <nav class="tabbar">
-      <button class="tab on" data-tab="home" onclick="go('home')">
-        <svg viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round"><path d="M3 10l9-7 9 7v10a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg><span>내기</span></button>
-      <button class="tab" data-tab="approve" onclick="go('approve')">
-        <svg viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round"><path d="M20 6L9 17l-5-5"/></svg><span>승인</span></button>
-      <button class="tab" data-tab="shop" onclick="go('shop')">
-        <svg viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round"><path d="M4 8h16l-1.2 12.1a1 1 0 0 1-1 .9H6.2a1 1 0 0 1-1-.9z"/><path d="M8.5 8V6a3.5 3.5 0 0 1 7 0v2"/></svg><span>상점</span></button>
-      <button class="tab" data-tab="device" onclick="go('device')">
-        <svg viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round"><rect x="6" y="2" width="12" height="20" rx="2"/><circle cx="12" cy="17" r="1.5"/></svg><span>기기</span></button>
+      <button class="tab on" data-tab="home" onclick="go('home')"><span class="ic" data-i="home"></span><span>내기</span></button>
+      <button class="tab" data-tab="approve" onclick="go('approve')"><span class="ic" data-i="check"></span><span>승인</span></button>
+      <button class="tab" data-tab="shop" onclick="go('shop')"><span class="ic" data-i="bag"></span><span>상점</span></button>
+      <button class="tab" data-tab="device" onclick="go('device')"><span class="ic" data-i="dev"></span><span>기계</span></button>
     </nav>
   </div>
 </div>
 
-<!-- ============ 사이드 패널 ============ -->
-<div class="panel">
+<div class="side-panel">
   <h3>짝<i>꿍</i> · 작동 데모</h3>
   <p class="lead">친구와 하는 내기로 습관을 만드는 서비스입니다. 왼쪽 화면은 실제로 눌러볼 수 있고, 타이머와 카메라는 진짜로 동작합니다.</p>
-
   <div class="pcard">
     <h4>흐름 따라가기</h4>
     <div class="steps">
       <button class="step on" data-s="home" onclick="go('home')"><b>1</b>오늘의 대결 보기</button>
       <button class="step" data-s="verify" onclick="go('verify')"><b>2</b>타이머·사진·목소리로 인증</button>
-      <button class="step" data-s="approve" onclick="go('approve')"><b>3</b>친구가 인정하기</button>
+      <button class="step" data-s="approve" onclick="go('approve')"><b>3</b>짝꿍이 인정하기</button>
       <button class="step" data-s="cele" onclick="celebrate()"><b>4</b>승리 세레머니</button>
       <button class="step" data-s="shop" onclick="go('shop')"><b>5</b>세레머니 상점</button>
-      <button class="step" data-s="device" onclick="go('device')"><b>6</b>기기와 연결</button>
+      <button class="step" data-s="device" onclick="go('device')"><b>6</b>기계와 연결</button>
     </div>
   </div>
-
   <div class="pcard">
     <h4>핵심 구조</h4>
     <div class="note">기계가 판정하지 않고 <b>친구가 인정</b>합니다. 타이머와 사진은 증거일 뿐 판정자가 아닙니다.
-    목소리를 남기게 해서 거짓 인증의 부담을 사람에게 돌렸습니다. 앱은 설정과 기록을 맡고, 매일의 접점은 <b>책상 위 기기</b>가 가져갑니다.</div>
+    목소리를 남기게 해서 거짓 인증의 부담을 사람에게 돌렸습니다. 앱은 설정과 기록을 맡고, 매일의 접점은 <b>책상 위 기계</b>가 가져갑니다.</div>
   </div>
-
   <div class="pcard">
     <h4>수익 구조</h4>
     <div class="kv"><span>라이트 이용자</span><span>세레머니 아이템 · 광고</span></div>
-    <div class="kv"><span>헤비 이용자</span><span>기기 2대 선물 세트</span></div>
+    <div class="kv"><span>헤비 이용자</span><span>기계 2대 선물 세트</span></div>
     <div class="kv"><span>돈을 거는 구조</span><span>없음</span></div>
   </div>
-
   <div class="pcard">
     <h4>근거</h4>
     <div class="note">미국 훈련개발협회(ASTD) 연구에서 목표를 혼자 마음먹으면 달성률 10%,
-    <b>남에게 약속하면 65%</b>, 정기적으로 점검받기로 하면 <b>95%</b>로 올랐습니다. 짝꿍은 그 점검을 매일 친구에게 맡깁니다.</div>
+    <b>남에게 약속하면 65%</b>, 정기적으로 점검받기로 하면 <b>95%</b>로 올랐습니다.</div>
   </div>
-
 </div>
 
 <script>
-/* ================= 캐릭터 (웹툰식 검정 외곽선) ================= */
-function pet(el,{c1,c2,mood='normal',scale=1,acc=''}){
+/* ============ 픽셀 스프라이트 ============ */
+const PAL = {
+  '.':null, K:'#16202E', W:'#FFFFFF', E:'#16202E',
+  C:'#FF8FA3', M:'#8E2436', G:'#FFC93C'
+};
+function sprite(el, body, mood){
   if(!el) return;
-  const S='stroke="#000" stroke-width="3.2"';
-  let eyes;
-  if(mood==='happy') eyes=`<path d="M45 55q5 -8 10 0" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M65 55q5 -8 10 0" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>`;
-  else if(mood==='sad') eyes=`<path d="M45 52q5 7 10 0" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M65 52q5 7 10 0" stroke="#000" stroke-width="4" fill="none" stroke-linecap="round"/>`;
-  else if(mood==='doubt') eyes=`<circle cx="50" cy="55" r="4.4" fill="#000"/><path d="M63 50q6 -5 12 0" stroke="#000" stroke-width="3.6" fill="none" stroke-linecap="round"/>`;
-  else eyes=`<circle cx="50" cy="55" r="4.8" fill="#000"/><circle cx="70" cy="55" r="4.8" fill="#000"/><circle cx="52" cy="53" r="1.7" fill="#fff"/><circle cx="72" cy="53" r="1.7" fill="#fff"/>`;
-  const mouth = mood==='sad' ? `<path d="M53 72q7 -6 14 0" stroke="#000" stroke-width="3.4" fill="none" stroke-linecap="round"/>`
-    : mood==='win' ? `<path d="M49 66q11 14 22 0z" fill="#000"/><path d="M53 71q7 6 14 0" fill="#FF7F95"/>`
-    : `<path d="M53 66q7 8 14 0" stroke="#000" stroke-width="3.4" fill="none" stroke-linecap="round"/>`;
-  el.innerHTML=`
-  <defs><linearGradient id="g${el.id}" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></linearGradient></defs>
-  <ellipse cx="60" cy="109" rx="24" ry="4" fill="rgba(0,0,0,.1)"/>
-  <g transform="translate(60,62) scale(${scale}) translate(-60,-62)">
-    <path d="M27 61q-9 4 -8 12" ${S} fill="none" stroke-linecap="round"/>
-    <path d="M93 61q9 4 8 12" ${S} fill="none" stroke-linecap="round"/>
-    <path d="M60 19c-21 0-34 16-34 36 0 21 15 34 34 34s34-13 34-34c0-20-13-36-34-36z" fill="url(#g${el.id})" ${S}/>
-    <ellipse cx="60" cy="35" rx="15" ry="8" fill="rgba(255,255,255,.4)"/>
-    <ellipse cx="41" cy="66" rx="6" ry="4" fill="#FF7F95" opacity="${mood==='sad'?.3:.75}"/>
-    <ellipse cx="79" cy="66" rx="6" ry="4" fill="#FF7F95" opacity="${mood==='sad'?.3:.75}"/>
-    ${eyes}${mouth}${acc}
-  </g>`;
+  const L=body.l, B=body.b, D=body.d;
+  const map = {...PAL, L, B, D};
+  // 공통 몸체
+  let rows = [
+    '................',
+    '.....KKKKKK.....',
+    '...KKLLLLLLKK...',
+    '..KLLLLLLLLLLK..',
+    '.KLLLLLLLLLLLLK.',
+    '.KLLBBBBBBBBLBK.',
+    'KLLBWWBBBBWWBBBK',
+    'KLBBWEBBBBWEBBBK',
+    'KLBBWWBBBBWWBBBK',
+    'KLBCBBBBBBBBCBBK',
+    'KLBBBBMMMMBBBBBK',
+    '.KBBBBMMMMBBBBK.',
+    '.KDBBBBBBBBBBDK.',
+    '..KDDBBBBBBDDK..',
+    '...KKDDDDDDKK...',
+    '.....KKKKKK.....'
+  ];
+  if(mood==='happy'){
+    rows[6]='KLLBBBBBBBBBBBBK';
+    rows[7]='KLBBKEBBBBKEBBBK';
+    rows[8]='KLBBBKBBBBBKBBBK';
+    rows[10]='KLBBBBMMMMBBBBBK';
+    rows[11]='.KBBBBBMMBBBBBK.';
+  }else if(mood==='sad'){
+    rows[6]='KLLBKBBBBBBKBBBK';
+    rows[7]='KLBBBKBBBBKBBBBK';
+    rows[8]='KLBBBEBBBBEBBBBK';
+    rows[9]='KLBBBBBBBBBBBBBK';
+    rows[10]='KLBBBBMMMMBBBBBK';
+    rows[11]='.KBBBMBBBBMBBBK.';
+  }else if(mood==='doubt'){
+    rows[6]='KLLBBBBBBBWWBBBK';
+    rows[7]='KLBBKKBBBBWEBBBK';
+    rows[8]='KLBBBBBBBBWWBBBK';
+    rows[10]='KLBBBBBMMBBBBBBK';
+    rows[11]='.KBBBBBMMBBBBBK.';
+  }else if(mood==='win'){
+    rows[6]='KLLBWWBBBBWWBBBK';
+    rows[7]='KLBBWEBBBBWEBBBK';
+    rows[8]='KLBBWWBBBBWWBBBK';
+    rows[10]='KLBMMMMMMMMMMBBK';
+    rows[11]='.KBMWWWWWWWWMBK.';
+  }
+  let out='';
+  rows.forEach((row,y)=>{
+    for(let x=0;x<row.length;x++){
+      const c=map[row[x]];
+      if(c) out+=`<rect x="${x}" y="${y}" width="1" height="1" fill="${c}"/>`;
+    }
+  });
+  if(mood==='win'){ /* 왕관 */
+    out = `<rect x="5" y="0" width="1" height="2" fill="#FFC93C"/><rect x="7" y="0" width="1" height="2" fill="#FFC93C"/>`
+        + `<rect x="9" y="0" width="1" height="2" fill="#FFC93C"/><rect x="5" y="1" width="5" height="1" fill="#FFC93C"/>`
+        + `<rect x="5" y="2" width="5" height="1" fill="#E8A41F"/>` + out;
+  }
+  el.setAttribute('shape-rendering','crispEdges');
+  el.innerHTML = out;
 }
-const ME={c1:'#5BFFA8',c2:'#00DC64'}, YOU={c1:'#D8D8D8',c2:'#9E9E9E'};
-const crown=`<path d="M45 25l5 -12 10 8 10 -8 5 12z" fill="#FFCC00" stroke="#000" stroke-width="2.6" stroke-linejoin="round"/>`;
-pet(document.getElementById('petMe'),{...ME,mood:'happy',scale:1.05});
-pet(document.getElementById('petYou'),{...YOU,mood:'sad',scale:.9});
-pet(document.getElementById('petWait'),{...ME,mood:'normal'});
-pet(document.getElementById('petDoubt'),{...YOU,mood:'doubt'});
-pet(document.getElementById('petWin'),{...ME,mood:'win',scale:1.1,acc:crown});
+const ME  = {l:'#8CF7B8', b:'#3FD97F', d:'#1B9E56'};
+const YOU = {l:'#B6E6FF', b:'#6BC7F5', d:'#2E86B8'};
+sprite(document.getElementById('petMe'),  ME,  'happy');
+sprite(document.getElementById('petYou'), YOU, 'sad');
+sprite(document.getElementById('petWait'),ME,  'normal');
+sprite(document.getElementById('petDoubt'),YOU,'doubt');
+sprite(document.getElementById('petWin'), ME,  'win');
 
-/* 기기 */
-document.getElementById('devSvg').innerHTML=`
-<ellipse cx="100" cy="214" rx="62" ry="7" fill="rgba(0,0,0,.09)"/>
-<g transform="translate(110,30)">
-  <rect x="0" y="0" width="76" height="108" rx="10" fill="#F0F0F0" stroke="#000" stroke-width="3"/>
-  <rect x="12" y="14" width="52" height="44" rx="6" fill="#111"/>
-  <circle cx="30" cy="33" r="3.4" fill="#9E9E9E"/><circle cx="46" cy="33" r="3.4" fill="#9E9E9E"/>
-  <path d="M32 44q6 6 12 0" stroke="#9E9E9E" stroke-width="2.8" fill="none" stroke-linecap="round"/>
-  <circle cx="38" cy="82" r="13" fill="#fff" stroke="#000" stroke-width="3"/>
-  <circle cx="38" cy="82" r="5.5" fill="#9E9E9E"/>
-</g>
-<g transform="translate(16,48)">
-  <rect x="0" y="0" width="84" height="120" rx="11" fill="#fff" stroke="#000" stroke-width="3.2"/>
-  <rect x="13" y="16" width="58" height="49" rx="7" fill="#111"/>
-  <circle cx="32" cy="37" r="3.8" fill="#00DC64"/><circle cx="52" cy="37" r="3.8" fill="#00DC64"/>
-  <path d="M34 49q8 7 16 0" stroke="#00DC64" stroke-width="3" fill="none" stroke-linecap="round"/>
-  <circle cx="42" cy="91" r="15" fill="#00DC64" stroke="#000" stroke-width="3.2"/>
-  <circle cx="15" cy="91" r="4.4" fill="#00DC64" stroke="#000" stroke-width="1.6"/>
-  <circle cx="69" cy="91" r="4.4" fill="#FFCC00" stroke="#000" stroke-width="1.6"/>
-</g>`;
+/* 탭 아이콘 (픽셀) */
+const ICONS={
+  home:['..XX..','.XXXX.','XXXXXX','X.XX.X','X.XX.X','XXXXXX'],
+  check:['.....X','....XX','X..XX.','XX.XX.','.XXX..','..X...'],
+  bag:['.XXXX.','X....X','XXXXXX','X....X','X....X','XXXXXX'],
+  dev:['.XXXX.','.X..X.','.X..X.','.X..X.','.X.XX.','.XXXX.']
+};
+document.querySelectorAll('.ic').forEach(el=>{
+  const m=ICONS[el.dataset.i]; if(!m) return;
+  let s='';
+  m.forEach((r,y)=>{for(let x=0;x<r.length;x++) if(r[x]==='X') s+=`<rect x="${x}" y="${y}" width="1" height="1" fill="currentColor"/>`;});
+  el.innerHTML=`<svg viewBox="0 0 6 6" width="22" height="22" shape-rendering="crispEdges">${s}</svg>`;
+});
 
-/* 음성 파형 */
+/* 기계 2대 (픽셀) */
+(function(){
+  const dev=(ox,pal,ledCol)=>{
+    const rows=[
+      '..KKKK..','.KKWWKK.','..KKKK..','.KKKKKK.',
+      'KLLLLLLK','KLBBBBLK','KLBSSBLK','KLBSSBLK',
+      'KLBBBBLK','KLBGBBLK','KLLLLLLK','.KBBBBK.',
+      '.KBCCBK.','.KBBBBK.','..KKKK..'
+    ];
+    const map={'.':null,K:'#16202E',W:'#DDE8F0',L:pal.l,B:pal.b,S:'#0B1622',G:ledCol,C:pal.d};
+    let s='';
+    rows.forEach((r,y)=>{for(let x=0;x<r.length;x++){const c=map[r[x]]; if(c) s+=`<rect x="${ox+x*2}" y="${8+y*2}" width="2" height="2" fill="${c}"/>`;}});
+    return s;
+  };
+  document.getElementById('devSvg').innerHTML =
+    dev(8, {l:'#8CF7B8',b:'#3FD97F',d:'#1B9E56'}, '#3FD97F') +
+    dev(40,{l:'#FFE9A8',b:'#FFC93C',d:'#D89F17'}, '#FFC93C');
+})();
+
+/* 파형 */
 const barsEl=document.getElementById('bars');
-if(barsEl) barsEl.innerHTML=[8,15,23,12,26,18,9,21,27,14,7,19,24,11,17,8,22,13].map(h=>`<i style="height:${h}px"></i>`).join('');
+if(barsEl) barsEl.innerHTML=[6,12,18,9,20,15,7,17,21,11,5,16,19,8,14,6,18,10].map(h=>`<i style="height:${h}px"></i>`).join('');
 
-/* ================= 화면 전환 ================= */
+/* ============ 화면 전환 ============ */
 function go(id){
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('on'));
   const v=document.getElementById('v-'+id); if(v){v.classList.add('on');v.scrollTop=0;}
@@ -607,111 +637,105 @@ function go(id){
   if(id!=='verify') stopCam();
 }
 
-/* ================= 타이머 ================= */
+/* ============ 타이머 ============ */
 let tSec=0,tId=null,tRun=false;
 const tnum=document.getElementById('tnum'), tBtn=document.getElementById('tBtn');
 function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
 function toggleTimer(){
-  if(tRun){ clearInterval(tId); tRun=false; tBtn.textContent='이어서'; tnum.classList.remove('run'); }
-  else{ tRun=true; tBtn.textContent='멈춤'; tnum.classList.add('run');
-    tId=setInterval(()=>{ tSec++; tnum.textContent=fmt(tSec); mark(1,true); refresh(); },1000); }
+  if(tRun){clearInterval(tId);tRun=false;tBtn.textContent='이어서';tnum.classList.remove('run');}
+  else{tRun=true;tBtn.textContent='멈춤';tnum.classList.add('run');
+    tId=setInterval(()=>{tSec++;tnum.textContent=fmt(tSec);mark(1,true);refresh();},1000);}
 }
-function resetTimer(){ clearInterval(tId); tRun=false; tSec=0; tnum.textContent='00:00';
-  tBtn.textContent='시작'; tnum.classList.remove('run'); mark(1,false); refresh(); }
+function resetTimer(){clearInterval(tId);tRun=false;tSec=0;tnum.textContent='00:00';
+  tBtn.textContent='시작';tnum.classList.remove('run');mark(1,false);refresh();}
 
-/* ================= 카메라 ================= */
-let stream=null, hasShot=false;
-const video=document.getElementById('video'), camView=document.getElementById('camView'),
-      camEmpty=document.getElementById('camEmpty'), shotImg=document.getElementById('shot'),
-      camBtn=document.getElementById('camBtn'), camMsg=document.getElementById('camMsg'),
+/* ============ 카메라 ============ */
+let stream=null,hasShot=false;
+const video=document.getElementById('video'),camView=document.getElementById('camView'),
+      camEmpty=document.getElementById('camEmpty'),shotImg=document.getElementById('shot'),
+      camBtn=document.getElementById('camBtn'),camMsg=document.getElementById('camMsg'),
       againBtn=document.getElementById('againBtn');
 async function openCam(){
   try{
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
     video.srcObject=stream; await video.play();
-    camEmpty.classList.add('hide'); shotImg.classList.remove('on'); camView.classList.add('on');
-    camBtn.style.display='none'; againBtn.style.display='none';
+    camEmpty.classList.add('hide');shotImg.classList.remove('on');camView.classList.add('on');
+    camBtn.style.display='none';againBtn.style.display='none';
     camMsg.textContent='가운데 버튼을 눌러 찍으세요';
-  }catch(e){
-    camMsg.textContent='카메라를 쓸 수 없어 예시 사진으로 대신합니다';
-    fakeShot();
-  }
+  }catch(e){ camMsg.textContent='카메라를 쓸 수 없어 예시로 대신합니다'; fakeShot(); }
 }
-function stopCam(){ if(stream){stream.getTracks().forEach(t=>t.stop()); stream=null;} camView.classList.remove('on'); }
+function stopCam(){ if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;} camView.classList.remove('on'); }
 function shoot(){
   const c=document.createElement('canvas');
-  c.width=video.videoWidth||960; c.height=video.videoHeight||720;
+  c.width=video.videoWidth||960;c.height=video.videoHeight||720;
   c.getContext('2d').drawImage(video,0,0,c.width,c.height);
   shotImg.src=c.toDataURL('image/jpeg',.85);
-  stopCam(); camEmpty.classList.add('hide'); shotImg.classList.add('on');
-  camMsg.textContent='사진이 증거로 첨부됐어요'; againBtn.style.display='inline-block'; camBtn.style.display='none';
-  hasShot=true; mark(2,true); refresh();
+  stopCam();camEmpty.classList.add('hide');shotImg.classList.add('on');
+  camMsg.textContent='사진이 증거로 첨부됐어요';againBtn.style.display='inline-block';camBtn.style.display='none';
+  hasShot=true;mark(2,true);refresh();
 }
 function fakeShot(){
-  const c=document.createElement('canvas'); c.width=800; c.height=600; const g=c.getContext('2d');
-  g.fillStyle='#F6F6F6'; g.fillRect(0,0,800,600);
-  g.fillStyle='#00DC64'; g.fillRect(0,0,800,12);
-  g.fillStyle='#000'; g.font='500 28px Pretendard, sans-serif';
-  g.fillText('2026.09.17  ·  7일차', 56, 110);
-  g.font='800 46px Pretendard, sans-serif'; g.fillText('오늘 읽은 쪽', 56, 300);
-  g.font='800 108px Pretendard, sans-serif'; g.fillText('24쪽', 56, 420);
-  g.fillStyle='#00DC64'; g.fillRect(56, 460, 150, 8);
-  g.fillStyle='#666'; g.font='500 26px Pretendard, sans-serif'; g.fillText('카메라로 남긴 기록', 56, 520);
+  const c=document.createElement('canvas');c.width=800;c.height=600;const g=c.getContext('2d');
+  g.fillStyle='#123A5A';g.fillRect(0,0,800,600);
+  g.fillStyle='#FFC93C';g.fillRect(0,0,800,10);
+  g.fillStyle='#BFE0F5';g.font='500 26px Galmuri11, monospace';g.fillText('2026.09.17  7일차',56,104);
+  g.fillStyle='#FFFFFF';g.font='500 44px Galmuri11, monospace';g.fillText('오늘 읽은 쪽',56,300);
+  g.fillStyle='#3FD97F';g.font='500 96px Galmuri11, monospace';g.fillText('24쪽',56,410);
+  g.fillStyle='#3FD97F';g.fillRect(56,450,140,8);
+  g.fillStyle='#8FB6D4';g.font='500 24px Galmuri11, monospace';g.fillText('카메라로 남긴 기록',56,510);
   shotImg.src=c.toDataURL('image/jpeg',.9);
-  camEmpty.classList.add('hide'); shotImg.classList.add('on'); camView.classList.remove('on');
-  againBtn.style.display='inline-block'; camBtn.style.display='none';
-  hasShot=true; mark(2,true); refresh();
+  camEmpty.classList.add('hide');shotImg.classList.add('on');camView.classList.remove('on');
+  againBtn.style.display='inline-block';camBtn.style.display='none';
+  hasShot=true;mark(2,true);refresh();
 }
 
-/* ================= 음성 ================= */
+/* ============ 음성 ============ */
 let recId=null,hasVoice=false;
-const micBtn=document.getElementById('micBtn'), wave=document.getElementById('wave'), vTimer=document.getElementById('vTimer');
+const micBtn=document.getElementById('micBtn'),wave=document.getElementById('wave'),vTimer=document.getElementById('vTimer');
 function startRec(){
   if(micBtn.classList.contains('rec'))return;
-  micBtn.classList.add('rec'); wave.classList.add('on');
-  let t=0; vTimer.textContent='0.0초';
-  recId=setInterval(()=>{ t+=0.1; vTimer.textContent=t.toFixed(1)+'초'; if(t>=10) stopRec(); },100);
+  micBtn.classList.add('rec');wave.classList.add('on');
+  let t=0;vTimer.textContent='0.0초';
+  recId=setInterval(()=>{t+=0.1;vTimer.textContent=t.toFixed(1)+'초';if(t>=10)stopRec();},100);
 }
 function stopRec(){
   if(!micBtn.classList.contains('rec'))return;
-  clearInterval(recId); micBtn.classList.remove('rec'); wave.classList.remove('on');
-  vTimer.textContent='한마디 남겼어요'; hasVoice=true; mark(3,true); refresh();
+  clearInterval(recId);micBtn.classList.remove('rec');wave.classList.remove('on');
+  vTimer.textContent='한마디 남겼어요';hasVoice=true;mark(3,true);refresh();
 }
 ['mousedown','touchstart'].forEach(e=>micBtn.addEventListener(e,ev=>{ev.preventDefault();startRec()},{passive:false}));
 ['mouseup','mouseleave','touchend'].forEach(e=>micBtn.addEventListener(e,stopRec));
 
-/* 체크 & 전송버튼 */
-function mark(n,on){ const el=document.getElementById('ck'+n); if(el) el.classList.toggle('done',on); }
-function refresh(){ document.getElementById('sendBtn').disabled = !(tSec>0||hasShot||hasVoice); }
-function stopAll(){ clearInterval(tId); tRun=false; tnum.classList.remove('run'); stopCam(); }
+function mark(n,on){const el=document.getElementById('ck'+n);if(el)el.classList.toggle('on',on);}
+function refresh(){document.getElementById('sendBtn').disabled=!(tSec>0||hasShot||hasVoice);}
+function stopAll(){clearInterval(tId);tRun=false;tnum.classList.remove('run');stopCam();}
 
-/* 재생 */
 const playBtn=document.getElementById('playBtn');
 if(playBtn) playBtn.addEventListener('click',()=>{
   const bs=[...document.querySelectorAll('#bars i')];
-  bs.forEach((b,i)=>setTimeout(()=>{b.style.background='#00DC64'},i*55));
-  setTimeout(()=>bs.forEach(b=>b.style.background='#D4D4D4'), bs.length*55+500);
+  bs.forEach((b,i)=>setTimeout(()=>{b.style.background='#3FD97F'},i*50));
+  setTimeout(()=>bs.forEach(b=>b.style.background='#8FA8BC'),bs.length*50+500);
 });
 
-/* ================= 세레머니 ================= */
+/* ============ 세레머니 ============ */
 function celebrate(){
   const c=document.getElementById('cele');
   c.querySelectorAll('.confetti').forEach(e=>e.remove());
-  const cols=['#00DC64','#FFCC00','#000000','#FF3B30','#9E9E9E'];
-  for(let i=0;i<24;i++){
-    const d=document.createElement('div'); d.className='confetti';
-    d.style.left=Math.random()*100+'%'; d.style.background=cols[i%cols.length];
-    d.style.animationDelay=(Math.random()*2.4)+'s';
-    d.style.animationDuration=(2+Math.random()*1.4)+'s';
+  const cols=['#3FD97F','#FFC93C','#FF7A45','#6BC7F5','#FFFFFF'];
+  for(let i=0;i<22;i++){
+    const d=document.createElement('div');d.className='confetti';
+    d.style.left=Math.random()*100+'%';d.style.background=cols[i%cols.length];
+    d.style.animationDelay=(Math.random()*2.2)+'s';
+    d.style.animationDuration=(1.8+Math.random()*1.2)+'s';
     c.appendChild(d);
   }
   c.classList.add('on');
   document.querySelectorAll('.step').forEach(s=>s.classList.toggle('on',s.dataset.s==='cele'));
   document.getElementById('scoreMe').innerHTML='7<em>/7일</em>';
   document.getElementById('barMe').style.width='100%';
-  pet(document.getElementById('petMe'),{...ME,mood:'win',scale:1.12,acc:crown});
+  sprite(document.getElementById('petMe'),ME,'win');
 }
-function closeCele(t){ document.getElementById('cele').classList.remove('on'); go(t); }
+function closeCele(t){document.getElementById('cele').classList.remove('on');go(t);}
 </script>
 </body>
 </html>
